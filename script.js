@@ -1,4 +1,3 @@
-
 // defining global variables to assist in manipulating DOM
 const toggleSwitch = document.querySelector('input[type="checkbox"]');
 const toggleText = document.getElementsByClassName('toggle-text')[0];
@@ -18,9 +17,9 @@ let storedTheme = localStorage.getItem('theme') || (window.matchMedia("(prefers-
 // if condition above returns dark (storedTheme = 'dark) then change toggle switch text, icon and position to be in line with dark mode style.
 if(storedTheme === 'dark'){
  toggleSwitch.checked = true;
- darkMode();
- imageMode('dark');
+ toggleLightAndDarkMode(storedTheme);
 }
+
 
 // set images based on color theme
 function imageMode(mode) {
@@ -29,29 +28,19 @@ function imageMode(mode) {
   image3.src = `img/undraw_conceptual_idea_${mode}.svg`;
 }
 
-function darkMode() {
-  navBar.style.backgroundColor = 'rgba(0,0,0, .5)';
-  textBox.style.backgroundColor = 'rgba(255,255,255, 0.5)';
-  document.documentElement.setAttribute('data-theme', 'dark')
-  toggleText.innerHTML = 'Dark Mode';
-  toggleIcon.classList.replace('fa-sun','fa-moon');
-  localStorage.setItem('theme', 'dark');
-  imageMode('dark');
-}
-
-function lightMode(){
-  navBar.style.backgroundColor = 'rgba(255,255,255, 0.5)';
-  textBox.style.backgroundColor = 'rgba(0,0,0, .5)';
-  document.documentElement.setAttribute('data-theme', 'light');
-  toggleText.innerHTML = 'light Mode';
-  toggleIcon.classList.replace('fa-moon','fa-sun');
-  localStorage.setItem('theme', 'light');
-  imageMode('light');
+function toggleLightAndDarkMode(mode) {
+  navBar.style.backgroundColor = mode === 'light' ? 'rgba(255,255,255, 0.5)' : 'rgba(0,0,0, .5)';
+  textBox.style.backgroundColor = mode === 'light' ? 'rgba(0,0,0, .5)' : 'rgba(255,255,255, 0.5)';
+  document.documentElement.setAttribute('data-theme', mode)
+  toggleText.innerHTML = `${mode.charAt(0).toUpperCase()}${mode.slice(1)} Mode`;
+  toggleIcon.classList.toggle('fa-moon');
+  localStorage.setItem('theme', mode);
+  imageMode(mode);
 }
 
 // switch Theme Dynamically
 function switchTheme(event) {
-event.target.checked ? darkMode() : lightMode()
+event.target.checked ? toggleLightAndDarkMode('dark') : toggleLightAndDarkMode('light')
 }
  // Event Listener for when the toggle button is changed.
 toggleSwitch.addEventListener('change', switchTheme);
